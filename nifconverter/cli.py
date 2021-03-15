@@ -5,6 +5,7 @@ from nifconverter.uriconverter import URIConverter
 from nifconverter.dbpedia_sparql import ToDBpediaSparqlConverter
 from nifconverter.dbpedia_sparql import FromDBpediaSparqlConverter
 from nifconverter.dbpedia_samething import SameThingConverter
+from nifconverter.index_sameas_uri_converter import IndexSameAsUriConverter
 from nifconverter.translator import NIFTranslator
 from nifconverter.utils import WIKIDATA_PREFIX
 
