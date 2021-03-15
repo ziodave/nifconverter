@@ -4,3 +4,4 @@
 build/
 dist/
 nifconverter.egg-info/
+venv/
