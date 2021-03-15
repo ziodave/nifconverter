@@ -1,5 +1,6 @@
 import requests
 
+from nifconverter.settings import SOLR_URL, SOLR_COLLECTION
 from nifconverter.uriconverter import URIConverter
 
 
@@ -20,7 +21,7 @@ class IndexSameAsUriConverter(URIConverter):
         Returns the converted URI or None if the concept does
         not exist in the target domain.
         """
-        url = "http://localhost:8983/solr/opentapioca-1/select"
+        url = "{SOLR_URL}/{SOLR_COLLECTION}/select".format(SOLR_URL=SOLR_URL, SOLR_COLLECTION=SOLR_COLLECTION)
         params = {'q': 'same_as_ss:"{}"'.format(uri)}
         r = requests.get(url, params)
 
