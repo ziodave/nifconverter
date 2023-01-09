@@ -3,7 +3,7 @@ import multiprocessing
 import re
 import threading
 import traceback
-from sys import stdout
+from sys import stdout, stderr
 from time import time
 from typing import Iterable
 from urllib.parse import unquote
@@ -34,7 +34,8 @@ def get_available_converters():
 @click.option('-i', '--infile', default='-', help='The source NIF file to read. If not provided, stdin is used.')
 @click.option('-o', '--outfile', default='-', help='The target NIF file to write. If not provided, stdout is used.')
 @click.option('--format', default='turtle', help='The RDF serialization format to use.')
-def main(converter, target, infile, outfile, format):
+@click.option('-n', default=multiprocessing.cpu_count(), help='The number of concurrent threads.')
+def main(converter, target, infile, outfile, format, thread_count=multiprocessing.cpu_count()):
     """
     Conversion utility for NIF files.
 
@@ -60,10 +61,9 @@ def main(converter, target, infile, outfile, format):
             "{}taIdentRef <{}>".format(m.group(1), converter.convert_one(unquote(m.group(2))) or m.group(2))
         ), line)
 
-    thread_count = 4  # multiprocessing.cpu_count()
     pool_scheduler = ThreadPoolScheduler(thread_count)
 
-    print("Using {} thread(s)".format(thread_count))
+    print("Using {} thread(s)".format(thread_count), file=stderr)
 
     stats = Stats()
     with fileinput.input(infile) as f, open(outfile, "w") if outfile != "-" else stdout as o:
@@ -110,7 +110,8 @@ class Stats(object):
         self.count += count
 
     def print(self):
-        print('{:,} document(s) processed, {:,.2f} dps'.format(self.count, self.count / (time() - self.start)))
+        print('{:,} document(s) processed, {:,.2f} dps'.format(self.count, self.count / (time() - self.start)),
+              file=stderr)
 
     def add_and_print(self, count: int):
         self.add(count)
