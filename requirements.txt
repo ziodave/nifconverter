@@ -6,3 +6,5 @@ requests_mock
 
 setuptools~=65.5.1
 reactivex~=4.0.4
+nifconverter~=0.2.3
+tenacity~=8.1.0

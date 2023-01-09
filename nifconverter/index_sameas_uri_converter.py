@@ -1,4 +1,5 @@
 import requests
+from tenacity import retry, wait_exponential
 
 from nifconverter.settings import SOLR_URL, SOLR_COLLECTION
 from nifconverter.uriconverter import URIConverter
@@ -15,6 +16,7 @@ class IndexSameAsUriConverter(URIConverter):
         """
         return True
 
+    @retry(wait=wait_exponential(multiplier=1, min=2, max=30))
     def convert_one(self, uri):
         """
         Convert one URI (assumed to be convertible).
