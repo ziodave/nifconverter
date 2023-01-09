@@ -34,8 +34,8 @@ def get_available_converters():
 @click.option('-i', '--infile', default='-', help='The source NIF file to read. If not provided, stdin is used.')
 @click.option('-o', '--outfile', default='-', help='The target NIF file to write. If not provided, stdout is used.')
 @click.option('--format', default='turtle', help='The RDF serialization format to use.')
-@click.option('-n', default=multiprocessing.cpu_count(), help='The number of concurrent threads.')
-def main(converter, target, infile, outfile, format, thread_count=multiprocessing.cpu_count()):
+@click.option('-n', '--threads', default=multiprocessing.cpu_count(), help='The number of concurrent threads.')
+def main(converter, target, infile, outfile, format, threads=multiprocessing.cpu_count()):
     """
     Conversion utility for NIF files.
 
@@ -61,9 +61,9 @@ def main(converter, target, infile, outfile, format, thread_count=multiprocessin
             "{}taIdentRef <{}>".format(m.group(1), converter.convert_one(unquote(m.group(2))) or m.group(2))
         ), line)
 
-    pool_scheduler = ThreadPoolScheduler(thread_count)
+    pool_scheduler = ThreadPoolScheduler(threads)
 
-    print("Using {} thread(s)".format(thread_count), file=stderr)
+    print("Using {} thread(s)".format(threads), file=stderr)
 
     stats = Stats()
     with fileinput.input(infile) as f, open(outfile, "w") if outfile != "-" else stdout as o:
